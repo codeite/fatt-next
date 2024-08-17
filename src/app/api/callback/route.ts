@@ -2,6 +2,10 @@ import { NextRequest } from 'next/server';
 
 const oathId = process.env.OAUTH_ID;
 const oauthSecret = process.env.OAUTH_SECRET;
+const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const callbackUrl = vercelUrl?.includes('localhost')
+  ? `http://${vercelUrl}/api/callback`
+  : `https://${vercelUrl}/api/callback`;
 
 export const dynamic = 'force-dynamic'; // static by default, unless reading the request
 
@@ -42,7 +46,7 @@ export async function GET(req: NextRequest) {
     body: new URLSearchParams({
       grant_type: 'authorization_code',
       code: code,
-      redirect_uri: 'http://localhost:3000/api/callback',
+      redirect_uri: callbackUrl,
     }).toString(),
   });
 
