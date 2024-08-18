@@ -2,11 +2,8 @@
 import { getTaskName } from '@/taskMap';
 import styles from './page.module.css';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { useDateSelect } from './useDateSelect';
 import { FreeagentTimeslip } from '@/freeagent';
-
-const cn = (...classes: (string | undefined)[]) =>
-  classes.filter(Boolean).join(' ');
+import { cn } from '@/app/utils/cn';
 
 export interface TimeslipDate {
   key: string;
@@ -28,6 +25,14 @@ interface DateProps {
   setEndDate: Dispatch<SetStateAction<string>>;
 }
 
+function calcColour(timeslipDate: TimeslipDateWithClient, totalHours: number) {
+  if (timeslipDate.isWeekend || !timeslipDate.passed) {
+    return undefined;
+  } else {
+    return totalHours < 8 ? styles.missingHours : styles.completeHours;
+  }
+}
+
 export function Date({ timeslipDate, setStartDate, setEndDate }: DateProps) {
   const [dragging, setDragging] = useState(false);
   const totalHours = timeslipDate.timeslips.reduce(
@@ -35,10 +40,7 @@ export function Date({ timeslipDate, setStartDate, setEndDate }: DateProps) {
     0
   );
 
-  const missingHours =
-    !timeslipDate.isWeekend && timeslipDate.passed && totalHours < 8
-      ? styles.missingHours
-      : undefined;
+  const missingHours = calcColour(timeslipDate, totalHours);
 
   const startDragging = (e: React.DragEvent) => {
     console.log('startDragging');
@@ -101,24 +103,31 @@ export function Date({ timeslipDate, setStartDate, setEndDate }: DateProps) {
             <div
               className={cn(
                 styles.dayBlockTop,
-                timeslipDate.inside ? styles.inside : styles.outside,
-                missingHours
+                timeslipDate.inside ? styles.inside : styles.outside
               )}
             >
               <div>{timeslipDate.number}</div>
               <div>{totalHours}h</div>
             </div>
             <div className={cn(styles.dayBlockBottom, missingHours)}>
-              {timeslipDate.timeslips.map((timeslip) => (
-                <div key={timeslip.url} className={styles.timeslip}>
-                  <div>{getTaskName(timeslip.task)}</div>
-                  <div>{parseFloat(timeslip.hours)}h</div>
-                </div>
-              ))}
+              {timeslipDate.timeslips.length === 0 ? (
+                <NoTimeslips />
+              ) : (
+                timeslipDate.timeslips.map((timeslip) => (
+                  <div key={timeslip.url} className={styles.timeslip}>
+                    <div>{getTaskName(timeslip.task)}</div>
+                    <div>{parseFloat(timeslip.hours)}h</div>
+                  </div>
+                ))
+              )}
             </div>
           </>
         )}
       </div>
     </div>
   );
+}
+
+function NoTimeslips() {
+  return <div className={styles.noTimeslips}>No timeslips</div>;
 }

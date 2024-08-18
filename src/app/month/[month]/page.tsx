@@ -47,7 +47,7 @@ export default async function Home({ params }: { params: { month: string } }) {
 
   return (
     <main>
-      <section>
+      {/* <section>
         <p>
           Month {params.month} <br />
           prefixDays: {prefixDays} <br />
@@ -55,8 +55,9 @@ export default async function Home({ params }: { params: { month: string } }) {
           weeks: {weeks} <br />
           daysOnScreen: {daysOnScreen} <br />
         </p>
-      </section>
+      </section> */}
       <ClientPage
+        firstOfMonth={params.month}
         tasks={tasks.tasks}
         projects={projects.projects}
         dates={dates}

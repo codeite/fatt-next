@@ -7,14 +7,22 @@ import { Calendar } from './calendar';
 import { useDateSelect } from './useDateSelect';
 import { createTimeslips } from '@/app/actions';
 import { useState } from 'react';
+import Link from 'next/link';
+import dayjs from 'dayjs';
 
 interface ClientPageProps {
+  firstOfMonth: string;
   tasks: FreeagentTask[];
   projects: FreeagentProject[];
   dates: TimeslipDate[];
 }
 
-export function ClientPage({ tasks, projects, dates }: ClientPageProps) {
+export function ClientPage({
+  firstOfMonth,
+  tasks,
+  projects,
+  dates,
+}: ClientPageProps) {
   const [selectedDate, setStartDate, setEndDate, inRange, datesArray] =
     useDateSelect();
   const [taskAndProject, setTaskAndProject] = useState('');
@@ -36,8 +44,22 @@ export function ClientPage({ tasks, projects, dates }: ClientPageProps) {
     };
   });
 
+  const thisMonth = dayjs(firstOfMonth);
+  const lastMonth = thisMonth.subtract(1, 'month');
+  const nextMonth = thisMonth.add(1, 'month');
+
   return (
     <>
+      <nav className={styles.navBar}>
+        <Link href={`/month/${lastMonth.format('YYYY-MM')}`}>
+          <span className="symbol">◀</span>
+          {lastMonth.format('MMM YYYY')}
+        </Link>
+        <a className={styles.center}>{thisMonth.format('MMM YYYY')}</a>
+        <Link href={`/month/${nextMonth.format('YYYY-MM')}`}>
+          {nextMonth.format('MMM YYYY')} <span className="symbol">▶</span>
+        </Link>
+      </nav>
       <div className={styles.actionBar}>
         <TaskPicker
           tasks={tasks}
@@ -46,16 +68,19 @@ export function ClientPage({ tasks, projects, dates }: ClientPageProps) {
           onChange={setTaskAndProject}
         />
         <select value={hours} onChange={(e) => setHours(e.target.value)}>
-          <option value="8.0">8</option>
-          <option value="4.0">4</option>
-          <option value="2.0">2</option>
+          <option value="8.0">8 hours</option>
+          <option value="4.0">4 hours</option>
+          <option value="2.0">2 hours</option>
         </select>
         <button
           onClick={() => {
             createTimeslips(datesArray, selectedTask, selectedProject, hours);
           }}
+          disabled={!selectedDate}
         >
-          Add to {selectedDate}
+          {selectedDate
+            ? `Add ${parseFloat(hours)}h to ${selectedDate}`
+            : 'Select a date'}
         </button>
       </div>
       <Calendar

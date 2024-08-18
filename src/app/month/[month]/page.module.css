@@ -1,3 +1,18 @@
+.navBar{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.navBar a {
+  cursor: pointer;
+}
+
+.center {
+  flex: 1;
+  text-align: center;
+}
+
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -72,6 +87,11 @@
   border-color:  #be342b;
 }
 
+.completeHours {
+  background-color: #e6f4e6;
+  border-color: #79cc6e
+}
+
 .selected {
   border: 3px double black;
   margin: -3px;
@@ -83,4 +103,13 @@
   border-radius: 8px;
   margin: 8px;
   padding: 8px;
+}
+
+.actionBar > * {
+  margin-left: 8px;
+}
+
+.noTimeslips {
+  font-style: italic;
+  color: #7e8a92;
 }
