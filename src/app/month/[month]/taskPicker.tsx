@@ -2,6 +2,7 @@
 
 import { FreeagentProject, FreeagentTask } from '@/freeagent';
 import { getTaskName } from '@/taskMap';
+import styles from './page.module.css';
 
 interface TaskPickerProps {
   tasks: FreeagentTask[];
@@ -38,7 +39,11 @@ export function TaskPicker({
   );
 
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={styles.newEntry}
+    >
       <option>Select a task</option>
       {Object.entries(tasksByProjectName).map(([projectName, tasks]) => (
         <optgroup label={projectName} key={projectName}>

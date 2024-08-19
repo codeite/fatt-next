@@ -4,6 +4,7 @@ import styles from './page.module.css';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { FreeagentTimeslip } from '@/freeagent';
 import { cn } from '@/app/utils/cn';
+import { updateTimeslip } from '@/app/actions';
 
 export interface TimeslipDate {
   key: string;
@@ -113,18 +114,67 @@ export function Date({ timeslipDate, setStartDate, setEndDate }: DateProps) {
               {timeslipDate.timeslips.length === 0 ? (
                 <NoTimeslips />
               ) : (
-                timeslipDate.timeslips.map((timeslip) => (
-                  <div key={timeslip.url} className={styles.timeslip}>
-                    <div>{getTaskName(timeslip.task)}</div>
-                    <div>{parseFloat(timeslip.hours)}h</div>
-                  </div>
-                ))
+                // timeslipDate.timeslips.map((timeslip) => (
+                //   <Timeslip key={timeslip.url} timeslip={timeslip} />
+                // ))
+                <Timeslips timeslips={timeslipDate.timeslips} />
               )}
             </div>
           </>
         )}
       </div>
     </div>
+  );
+}
+
+function Timeslips({ timeslips }: { timeslips: FreeagentTimeslip[] }) {
+  const [hours, setHours] = useState(
+    timeslips.map((timeslip) => timeslip.hours)
+  );
+
+  const changed = hours.some((hour, i) => hour !== timeslips[i].hours);
+
+  const apply = async () => {
+    const changed = timeslips
+      .map((t, i) => ({ t, h: hours[i] }))
+      .filter(({ t, h }) => t.hours !== h);
+    for (const { t, h } of changed) {
+      await updateTimeslip(t.url, h);
+    }
+  };
+  const cancel = () => {
+    setHours(timeslips.map((timeslip) => timeslip.hours));
+  };
+
+  return (
+    <>
+      {timeslips.map((timeslip, i) => (
+        <div className={styles.timeslip} key={timeslip.url}>
+          <div>{getTaskName(timeslip.task)}</div>
+          <select
+            className={styles.clearSelect}
+            value={hours[i]}
+            onChange={(e) =>
+              setHours(
+                hours.map((hour, j) => (i === j ? e.target.value : hour))
+              )
+            }
+          >
+            <option value="8.0">8h</option>
+            <option value="4.0">4h</option>
+            <option value="2.0">2h</option>
+            <optgroup label="---"></optgroup>
+            <option value="delete">⌫</option>
+          </select>
+        </div>
+      ))}
+      {changed && (
+        <div className={styles.timeslip}>
+          <button onClick={() => cancel()}>Cancel</button>
+          <button onClick={() => apply()}>Apply</button>
+        </div>
+      )}
+    </>
   );
 }
 

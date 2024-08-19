@@ -67,12 +67,17 @@ export function ClientPage({
           value={taskAndProject}
           onChange={setTaskAndProject}
         />
-        <select value={hours} onChange={(e) => setHours(e.target.value)}>
+        <select
+          className={styles.newEntry}
+          value={hours}
+          onChange={(e) => setHours(e.target.value)}
+        >
           <option value="8.0">8 hours</option>
           <option value="4.0">4 hours</option>
           <option value="2.0">2 hours</option>
         </select>
         <button
+          className={styles.newEntry}
           onClick={() => {
             createTimeslips(datesArray, selectedTask, selectedProject, hours);
           }}

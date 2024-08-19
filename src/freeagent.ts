@@ -102,6 +102,60 @@ export async function freeagentPost<T>(path: string, body: object) {
   return r.json() as T;
 }
 
+export async function freeagentPut<T>(path: string, body: object) {
+  if (path.startsWith('http')) {
+    const pathStart = path.indexOf('/v2/');
+    path = path.substring(pathStart);
+  }
+
+  console.log('body:', body);
+
+  console.log(`freeagentPut path: ${path}`);
+  const token = await getAccessToken();
+
+  const r = await fetch(`https://api.freeagent.com/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: 'Bearer ' + token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!r.ok) {
+    const body = await r.text();
+    console.error('Error:', body);
+    throw new Error(body);
+  }
+
+  return r.json() as T;
+}
+
+export async function freeagentDelete(path: string) {
+  if (path.startsWith('http')) {
+    const pathStart = path.indexOf('/v2/');
+    path = path.substring(pathStart);
+  }
+
+  console.log(`freeagentDelete path: ${path}`);
+  const token = await getAccessToken();
+
+  const r = await fetch(`https://api.freeagent.com/${path}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  });
+
+  if (!r.ok) {
+    const body = await r.text();
+    console.error('Error:', body);
+    throw new Error(body);
+  }
+
+  return;
+}
+
 export interface CreateFreeagentTimeslip {
   task: string;
   user: string;

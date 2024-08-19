@@ -113,3 +113,39 @@
   font-style: italic;
   color: #7e8a92;
 }
+
+.newEntry {
+  /* -webkit-appearance: none;
+   appearance: none; */
+   background-color: white;
+   border-color: #b5bcc0;
+   border-radius: 4px;
+   border-style: solid;
+   border-width: 1px;
+   color: #181a1b;
+   height: 34px;
+   outline: none;
+   padding:8px;
+   /* transition: background 0.2s, border 0.2s, box-shadow 0.2s; */
+   vertical-align: top;
+ }
+
+ .clearSelect {
+  border: none;
+  appearance: none;
+  background: none;
+  color: #181a1b;
+  border: 1px solid transparent;
+  width: 36px;
+  padding: 2px;
+  
+ }
+
+ .clearSelect:hover {
+  appearance: textfield;
+  border: 1px solid black;
+ }
+
+ .clearSelect:focus-visible {
+  outline: none;
+ }

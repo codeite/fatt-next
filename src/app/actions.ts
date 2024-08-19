@@ -1,6 +1,11 @@
 'use server';
 
-import { CreateFreeagentTimeslip, freeagentPost } from '@/freeagent';
+import {
+  CreateFreeagentTimeslip,
+  freeagentDelete,
+  freeagentPost,
+  freeagentPut,
+} from '@/freeagent';
 
 export async function createTimeslips(
   dates: string[],
@@ -25,4 +30,12 @@ export async function createTimeslips(
   };
 
   await freeagentPost('/v2/timeslips', body);
+}
+
+export async function updateTimeslip(url: string, newValue: string) {
+  if (newValue === 'delete') {
+    await freeagentDelete(url);
+  } else {
+    await freeagentPut(url, { hours: newValue });
+  }
 }
