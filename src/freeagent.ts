@@ -73,6 +73,72 @@ export async function freeagentGet<T>(path: string) {
   return r.json() as T;
 }
 
+export async function freeagentGetAll<T>(path: string): Promise<T[]> {
+  const generator = freeagentGetAllGen<T>(path);
+  const results: T[] = [];
+
+  for await (const result of generator) {
+    results.push(result);
+  }
+
+  return results;
+}
+
+export async function* freeagentGetAllGen<T>(path: string) {
+  if (path.startsWith('http')) {
+    const pathStart = path.indexOf('/v2/');
+    path = path.substring(pathStart);
+  }
+
+  console.log(`freeagentGet path: ${path}`);
+  const token = await getAccessToken();
+
+  let url = `https://api.freeagent.com/${path}` as string | undefined;
+  let pages = 0;
+  while (url && pages++ < 10) {
+    const r = await fetch(url, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
+
+    if (!r.ok) {
+      const body = await r.text();
+      console.error('Error:', body);
+      throw new Error(body);
+    }
+
+    const t = (await r.json()) as T;
+    yield t;
+
+    const links = parseLinks(r.headers.get('link'));
+    url = links['next'];
+
+    console.log('links:', links);
+  }
+  return null;
+}
+
+function parseLinks(links: string | null) {
+  console.log('links:', links);
+  if (!links) {
+    return {};
+  }
+
+  const linkMap: Record<string, string> = {};
+  const parts = links.split(',');
+  for (const part of parts) {
+    const [url, rel] = part.split('; rel=');
+    const urlMatch = url.match(/<(.*)>/);
+    const relMatch = rel.match(/["'](.*)["']/);
+    if (urlMatch && relMatch) {
+      linkMap[relMatch[1]] = urlMatch[1];
+    }
+  }
+
+  return linkMap;
+}
+
 export async function freeagentPost<T>(path: string, body: object) {
   if (path.startsWith('http')) {
     const pathStart = path.indexOf('/v2/');

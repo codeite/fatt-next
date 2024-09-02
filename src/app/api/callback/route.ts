@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 const oathId = process.env.OAUTH_ID;
 const oauthSecret = process.env.OAUTH_SECRET;
-const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'localhost:3000';
 const callbackUrl = vercelUrl?.includes('localhost')
   ? `http://${vercelUrl}/api/callback`
   : `https://${vercelUrl}/api/callback`;

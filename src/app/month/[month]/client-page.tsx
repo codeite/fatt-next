@@ -40,7 +40,7 @@ export function ClientPage({
 
     return {
       ...date,
-      isSelected: inRange(date.key),
+      isSelected,
     };
   });
 

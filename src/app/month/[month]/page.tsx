@@ -1,6 +1,7 @@
 'use server';
 import {
   freeagentGet,
+  freeagentGetAll,
   ProjectsResponse,
   TasksResponse,
   TimeslipResponse,
@@ -21,8 +22,8 @@ export default async function Home({ params }: { params: { month: string } }) {
   const requestUrl = `/v2/timeslips?from_date=${calendarStart.format(
     'YYYY-MM-DD'
   )}&to_date=${calendarEnd.format('YYYY-MM-DD')}&view=all`;
-  const timeslipsResponse = await freeagentGet<TimeslipResponse>(requestUrl);
-  const timeslips = timeslipsResponse.timeslips;
+  const timeslipResponses = await freeagentGetAll<TimeslipResponse>(requestUrl);
+  const timeslips = timeslipResponses.flatMap((response) => response.timeslips);
 
   const dates = [...Array(daysOnScreen)].map((_, i) => {
     const date = calendarStart.add(i, 'day');
