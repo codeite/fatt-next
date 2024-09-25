@@ -32,7 +32,16 @@ export function useDateSelect() {
     dayjs(startDate).add(i, 'day').format('YYYY-MM-DD')
   );
 
-  return [selectedDate, setStartDate, setEndDate, inRange, datesArray] as const;
+  const selectedDates = datesArray.filter((date) => inRange(date) !== 'no');
+
+  return [
+    selectedDate,
+    setStartDate,
+    setEndDate,
+    inRange,
+    datesArray,
+    selectedDates,
+  ] as const;
 }
 
 function formatDateRange(startDate: string, endDate: string) {

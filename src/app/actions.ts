@@ -7,6 +7,8 @@ import {
   freeagentPut,
 } from '@/freeagent';
 
+import { revalidatePath } from 'next/cache';
+
 export async function createTimeslips(
   dates: string[],
   task: string,
@@ -30,6 +32,8 @@ export async function createTimeslips(
   };
 
   await freeagentPost('/v2/timeslips', body);
+
+  await revalidatePath('/v2/timeslips');
 }
 
 export async function updateTimeslip(url: string, newValue: string) {
@@ -38,4 +42,6 @@ export async function updateTimeslip(url: string, newValue: string) {
   } else {
     await freeagentPut(url, { hours: newValue });
   }
+
+  await revalidatePath('/v2/timeslips');
 }

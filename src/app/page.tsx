@@ -13,9 +13,11 @@ export default function Home() {
   const href = `https://api.freeagent.com/v2/approve_app?client_id=${oathId}&response_type=code&redirect_uri=${callbackUrl}`;
   return (
     <main className={styles.main}>
-      <div>vercelUrl: {vercelUrl}</div>
-      <div>callbackUrl: {callbackUrl}</div>
-      <a href={href}>Link</a>
+      <div>
+        <a href={href}>Login</a>
+        <div>vercelUrl: {vercelUrl}</div>
+        <div>callbackUrl: {callbackUrl}</div>
+      </div>
     </main>
   );
 }

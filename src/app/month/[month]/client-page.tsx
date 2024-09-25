@@ -23,7 +23,7 @@ export function ClientPage({
   projects,
   dates,
 }: ClientPageProps) {
-  const [selectedDate, setStartDate, setEndDate, inRange, datesArray] =
+  const [selectedDate, setStartDate, setEndDate, inRange, selectedDates] =
     useDateSelect();
   const [taskAndProject, setTaskAndProject] = useState('');
   const [hours, setHours] = useState('8');
@@ -31,12 +31,7 @@ export function ClientPage({
   const [selectedTask, selectedProject] = taskAndProject.split('|');
 
   const datesWithClient: TimeslipDateWithClient[] = dates.map((date) => {
-    const isInRange = inRange(date.key);
-    const isSelected = date.isWeekend
-      ? isInRange === 'single'
-        ? 'single'
-        : 'no'
-      : isInRange;
+    const isSelected = inRange(date.key);
 
     return {
       ...date,
@@ -79,7 +74,12 @@ export function ClientPage({
         <button
           className={styles.newEntry}
           onClick={() => {
-            createTimeslips(datesArray, selectedTask, selectedProject, hours);
+            createTimeslips(
+              selectedDates,
+              selectedTask,
+              selectedProject,
+              hours
+            );
           }}
           disabled={!selectedDate}
         >

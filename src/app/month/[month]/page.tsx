@@ -29,7 +29,7 @@ export default async function Home({ params }: { params: { month: string } }) {
     const date = calendarStart.add(i, 'day');
 
     const timeslipDate: TimeslipDate = {
-      key: date.format(),
+      key: date.format('YYYY-MM-DD'),
       date: date.toDate(),
       inside: date.month() === firstDay.month(),
       passed: date.isBefore(dayjs()),
