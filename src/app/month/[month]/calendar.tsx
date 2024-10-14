@@ -27,7 +27,7 @@ export function Calendar({
   setStartDate: Dispatch<SetStateAction<string>>;
   setEndDate: Dispatch<SetStateAction<string>>;
 }) {
-  const [hideWeekends, setHideWeekends] = useState(false);
+  const [hideWeekends, setHideWeekends] = useState(true);
 
   const isHiddenWeekend = (date: string) => {
     if (!hideWeekends) return false;
