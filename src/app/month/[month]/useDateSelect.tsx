@@ -7,8 +7,6 @@ export function useDateSelect() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const selectedDate = formatDateRange(startDate, endDate);
-
   const inRange = (date: string): 'no' | 'range' | 'single' => {
     if (!startDate || !endDate) {
       return 'no';
@@ -34,14 +32,15 @@ export function useDateSelect() {
 
   const selectedDates = datesArray.filter((date) => inRange(date) !== 'no');
 
-  return [
-    selectedDate,
+  const datesDescription = formatDates(selectedDates);
+  return {
+    datesDescription,
     setStartDate,
     setEndDate,
     inRange,
     datesArray,
     selectedDates,
-  ] as const;
+  } as const;
 }
 
 function formatDateRange(startDate: string, endDate: string) {
@@ -65,4 +64,55 @@ function formatDateRange(startDate: string, endDate: string) {
   }
 
   return `${start.format('Do MMM YYYY')} - ${end.format('Do MMM YYYY')}`;
+}
+
+function formatDates(dates: string[]) {
+  if (dates.length === 0) {
+    return '';
+  }
+
+  if (dates.length === 1) {
+    return dayjs(dates[0]).format('Do MMM YYYY');
+  }
+
+  const groupedWhereContiguous = dates.reduce((acc, date) => {
+    const lastGroup = acc[acc.length - 1];
+    const lastDate = lastGroup ? lastGroup[lastGroup.length - 1] : null;
+
+    if (lastDate && dayjs(date).diff(dayjs(lastDate), 'day') === 1) {
+      lastGroup.push(date);
+    } else {
+      acc.push([date]);
+    }
+
+    return acc;
+  }, [] as string[][]);
+
+  return formatEnglishList(groupedWhereContiguous.map(formatContiguousDates));
+}
+
+function formatContiguousDates(dates: string[]) {
+  if (dates.length === 0) {
+    return '';
+  }
+
+  const start = dates[0];
+  const end = dates[dates.length - 1];
+  return formatDateRange(start, end);
+}
+
+function formatEnglishList(items: string[]) {
+  if (items.length === 0) {
+    return '';
+  }
+
+  if (items.length === 1) {
+    return items[0];
+  }
+
+  if (items.length === 2) {
+    return `${items[0]} and ${items[1]}`;
+  }
+
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }

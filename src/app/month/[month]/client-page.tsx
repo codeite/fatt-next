@@ -23,7 +23,7 @@ export function ClientPage({
   projects,
   dates,
 }: ClientPageProps) {
-  const [selectedDate, setStartDate, setEndDate, inRange, selectedDates] =
+  const { datesDescription, setStartDate, setEndDate, inRange, selectedDates } =
     useDateSelect();
   const [taskAndProject, setTaskAndProject] = useState('');
   const [hours, setHours] = useState('8');
@@ -81,10 +81,11 @@ export function ClientPage({
               hours
             );
           }}
-          disabled={!selectedDate}
+          disabled={selectedDates.length === 0}
+          data-variant="primary"
         >
-          {selectedDate
-            ? `Add ${parseFloat(hours)}h to ${selectedDate}`
+          {datesDescription
+            ? `Add ${parseFloat(hours)} hours to ${datesDescription}`
             : 'Select a date'}
         </button>
       </div>
