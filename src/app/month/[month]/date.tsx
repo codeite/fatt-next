@@ -24,6 +24,7 @@ interface DateProps {
   timeslipDate: TimeslipDateWithClient;
   setStartDate: Dispatch<SetStateAction<string>>;
   setEndDate: Dispatch<SetStateAction<string>>;
+  small?: boolean;
 }
 
 function calcColour(timeslipDate: TimeslipDateWithClient, totalHours: number) {
@@ -34,7 +35,12 @@ function calcColour(timeslipDate: TimeslipDateWithClient, totalHours: number) {
   }
 }
 
-export function Date({ timeslipDate, setStartDate, setEndDate }: DateProps) {
+export function Date({
+  timeslipDate,
+  setStartDate,
+  setEndDate,
+  small,
+}: DateProps) {
   const [dragging, setDragging] = useState(false);
   const totalHours = timeslipDate.timeslips.reduce(
     (total, timeslip) => total + parseFloat(timeslip.hours),
@@ -90,7 +96,8 @@ export function Date({ timeslipDate, setStartDate, setEndDate }: DateProps) {
       className={cn(
         styles.day,
         timeslipDate.isSelected !== 'no' ? styles.selected : undefined,
-        dragging ? styles.dragging : undefined
+        dragging ? styles.dragging : undefined,
+        small ? styles.smallWeekend : undefined
       )}
     >
       <div
@@ -107,17 +114,39 @@ export function Date({ timeslipDate, setStartDate, setEndDate }: DateProps) {
                 timeslipDate.inside ? styles.inside : styles.outside
               )}
             >
-              <div>{timeslipDate.number}</div>
-              <div>{totalHours}h</div>
-            </div>
-            <div className={cn(styles.dayBlockBottom, missingHours)}>
-              {timeslipDate.timeslips.length === 0 ? (
-                <NoTimeslips />
+              {small ? (
+                <>
+                  <div>{timeslipDate.number}</div>
+                  <div>&nbsp;&nbsp;&nbsp;</div>
+                </>
               ) : (
-                // timeslipDate.timeslips.map((timeslip) => (
-                //   <Timeslip key={timeslip.url} timeslip={timeslip} />
-                // ))
-                <Timeslips timeslips={timeslipDate.timeslips} />
+                <>
+                  <div>{timeslipDate.number}</div>
+                  <div>{totalHours}h</div>
+                </>
+              )}
+            </div>
+            <div
+              className={cn(
+                styles.dayBlockBottom,
+                missingHours,
+                small ? styles.smallWeekend : undefined
+              )}
+            >
+              {small ? (
+                <>{totalHours}h</>
+              ) : (
+                // <NoTimeslips />
+                <>
+                  {timeslipDate.timeslips.length === 0 ? (
+                    <NoTimeslips />
+                  ) : (
+                    // timeslipDate.timeslips.map((timeslip) => (
+                    //   <Timeslip key={timeslip.url} timeslip={timeslip} />
+                    // ))
+                    <Timeslips timeslips={timeslipDate.timeslips} />
+                  )}
+                </>
               )}
             </div>
           </>

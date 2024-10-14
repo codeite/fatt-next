@@ -4,8 +4,8 @@ import styles from './page.module.css';
 import dayjs from 'dayjs';
 import { TimeslipDateWithClient } from './date';
 import { Date } from './date';
-import { useDateSelect } from './useDateSelect';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { cn } from '@/app/utils/cn';
 
 const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const DAYS_FULL = [
@@ -27,27 +27,58 @@ export function Calendar({
   setStartDate: Dispatch<SetStateAction<string>>;
   setEndDate: Dispatch<SetStateAction<string>>;
 }) {
+  const [hideWeekends, setHideWeekends] = useState(false);
+
+  const isHiddenWeekend = (date: string) => {
+    if (!hideWeekends) return false;
+
+    if (date === 'S') {
+      return true;
+    }
+    return dayjs(date).day() === 0 || dayjs(date).day() === 6;
+  };
+
+  const weekendStyle = (date: string) => {
+    const isWe = isHiddenWeekend(date);
+    return isWe ? styles.smallWeekend : undefined;
+  };
+
   return (
     <>
-      <div className={styles.calendar}>
-        {DAYS.map((day, i) => (
-          <div key={i} className={styles.dayHeading}>
-            <div></div>
-            <div>{day}</div>
-            <div>{DAYS_FULL[i].substring(1)}</div>
-          </div>
-        ))}
-        {dates.map((date) => {
-          return (
-            <div key={date.key}>
-              <Date
-                timeslipDate={date}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-              />
+      <div className={styles.calendarWrapper}>
+        <div
+          className={cn(
+            styles.calendar,
+            hideWeekends ? styles.calendar5 : styles.calendar7
+          )}
+        >
+          {DAYS.map((day, i) => (
+            <div key={i} className={cn(styles.dayHeading, weekendStyle(day))}>
+              <div></div>
+              <div>{day}</div>
+              <div>{DAYS_FULL[i].substring(1)}</div>
             </div>
-          );
-        })}
+          ))}
+          {dates.map((date) => {
+            return (
+              <div
+                key={date.key}
+                className={cn(styles.day, weekendStyle(date.key))}
+              >
+                <Date
+                  timeslipDate={date}
+                  setStartDate={setStartDate}
+                  setEndDate={setEndDate}
+                  small={isHiddenWeekend(date.key)}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <button onClick={() => setHideWeekends(!hideWeekends)}>
+          Weekend
+          <br />v
+        </button>
       </div>
     </>
   );
