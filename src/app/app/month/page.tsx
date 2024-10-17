@@ -7,7 +7,7 @@ const ThisMonthPage = () => {
   const today = dayjs();
   const month = today.format('YYYY-MM');
 
-  return redirect(`/month/${month}`);
+  return redirect(`/app/month/${month}`);
 };
 
 export default ThisMonthPage;

@@ -11,6 +11,18 @@ interface Tokens {
 const oathId = process.env.OAUTH_ID;
 const oauthSecret = process.env.OAUTH_SECRET;
 
+// function handleFreeagentError(errorText: string) {
+//   let errorObject: unknown;
+
+//   try {
+//     errorObject = JSON.parse(errorText);
+//   } catch (e) {
+//     console.error('Error parsing errorText:', errorText);
+//   }
+// }
+
+// function handleAccessTokenNotRecognised() {}
+
 export async function refreshAccessTokens(
   refreshToken: string
 ): Promise<Tokens | undefined> {
