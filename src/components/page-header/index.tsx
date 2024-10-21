@@ -8,6 +8,7 @@ export function PageHeader() {
       <Link href="/">Home</Link>
       <Link href="/app/month">Months</Link>
       <Link href="/app/tasks">Tasks</Link>
+      <Link href="/app/contact">Contact</Link>
     </header>
   );
 }

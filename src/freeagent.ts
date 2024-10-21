@@ -85,8 +85,11 @@ export async function freeagentGet<T>(path: string) {
   return r.json() as T;
 }
 
-export async function freeagentGetAll<T>(path: string): Promise<T[]> {
-  const generator = freeagentGetAllGen<T>(path);
+export async function freeagentGetAll<T>(
+  path: string,
+  query?: URLSearchParams
+): Promise<T[]> {
+  const generator = freeagentGetAllGen<T>(path, query);
   const results: T[] = [];
 
   for await (const result of generator) {
@@ -96,7 +99,10 @@ export async function freeagentGetAll<T>(path: string): Promise<T[]> {
   return results;
 }
 
-export async function* freeagentGetAllGen<T>(path: string) {
+export async function* freeagentGetAllGen<T>(
+  path: string,
+  query?: URLSearchParams
+) {
   if (path.startsWith('http')) {
     const pathStart = path.indexOf('/v2/');
     path = path.substring(pathStart);
@@ -106,6 +112,11 @@ export async function* freeagentGetAllGen<T>(path: string) {
   const token = await getAccessToken();
 
   let url = `https://api.freeagent.com/${path}` as string | undefined;
+
+  if (query) {
+    url += '?' + query.toString();
+  }
+
   let pages = 0;
   while (url && pages++ < 10) {
     const r = await fetch(url, {
@@ -295,4 +306,47 @@ export interface FreeagentProject {
   uses_project_invoice_sequence: boolean;
   billing_period: string;
   include_unbilled_time_in_profitability: boolean;
+}
+
+export interface FreeagentContactResponse {
+  contacts: FreeagentContact[];
+}
+
+export interface FreeagentContact {
+  url: string;
+  organisation_name?: string;
+  first_name?: string;
+  last_name?: string;
+  active_projects_count: string;
+  created_at: string;
+  updated_at: string;
+  contact_name_on_invoices: boolean;
+  country: string;
+  charge_sales_tax: string;
+  locale: string;
+  account_balance: string;
+  status: string;
+  uses_contact_invoice_sequence: boolean;
+  emails_invoices_automatically: boolean;
+  emails_payment_reminders: boolean;
+  emails_thank_you_notes: boolean;
+  uses_contact_level_email_settings: boolean;
+}
+
+export interface FreeagentCreateContact {
+  contact: {
+    organisation_name?: string;
+    contact_name?: string;
+  };
+}
+
+export interface FreeagentNote {
+  url: string;
+  note: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FreeagentNotesResponse {
+  notes: FreeagentNote[];
 }
