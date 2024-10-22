@@ -49,12 +49,12 @@ export function ClientPage({
   return (
     <>
       <nav className={styles.navBar}>
-        <Link href={`/month/${lastMonth.format('YYYY-MM')}`}>
+        <Link href={`/app/month/${lastMonth.format('YYYY-MM')}`}>
           <span className="symbol">◀</span>
           {lastMonth.format('MMM YYYY')}
         </Link>
         <a className={styles.center}>{thisMonth.format('MMM YYYY')}</a>
-        <Link href={`/month/${nextMonth.format('YYYY-MM')}`}>
+        <Link href={`/app/month/${nextMonth.format('YYYY-MM')}`}>
           {nextMonth.format('MMM YYYY')} <span className="symbol">▶</span>
         </Link>
       </nav>
