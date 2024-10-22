@@ -9,6 +9,7 @@ import {
 import dayjs from 'dayjs';
 import { TimeslipDate } from './date';
 import { ClientPage } from './client-page';
+import { getFattSettings } from '@/fatt-settings';
 
 export default async function Home({ params }: { params: { month: string } }) {
   const firstDay = dayjs(`${params.month}-01`);
@@ -18,6 +19,8 @@ export default async function Home({ params }: { params: { month: string } }) {
   const daysOnScreen = weeks * 7;
   const calendarStart = firstDay.add(-prefixDays, 'day');
   const calendarEnd = calendarStart.add(daysOnScreen, 'day');
+
+  const fattSettings = await getFattSettings();
 
   const requestUrl = `/v2/timeslips?from_date=${calendarStart.format(
     'YYYY-MM-DD'
@@ -62,6 +65,7 @@ export default async function Home({ params }: { params: { month: string } }) {
         tasks={tasks.tasks}
         projects={projects.projects}
         dates={dates}
+        fattSettings={fattSettings}
       />
     </main>
   );

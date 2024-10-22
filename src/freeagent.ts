@@ -350,3 +350,7 @@ export interface FreeagentNote {
 export interface FreeagentNotesResponse {
   notes: FreeagentNote[];
 }
+
+export interface FreeagentNoteResponse {
+  note: FreeagentNote;
+}

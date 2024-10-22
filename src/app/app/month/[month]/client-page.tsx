@@ -9,12 +9,14 @@ import { createTimeslips } from '@/app/actions';
 import { useState } from 'react';
 import Link from 'next/link';
 import dayjs from 'dayjs';
+import { FattSettings } from '@/fatt-settings';
 
 interface ClientPageProps {
   firstOfMonth: string;
   tasks: FreeagentTask[];
   projects: FreeagentProject[];
   dates: TimeslipDate[];
+  fattSettings: FattSettings;
 }
 
 export function ClientPage({
@@ -22,6 +24,7 @@ export function ClientPage({
   tasks,
   projects,
   dates,
+  fattSettings,
 }: ClientPageProps) {
   const { datesDescription, setStartDate, setEndDate, inRange, selectedDates } =
     useDateSelect();
@@ -61,6 +64,7 @@ export function ClientPage({
           projects={projects}
           value={taskAndProject}
           onChange={setTaskAndProject}
+          fattSettings={fattSettings}
         />
         <select
           className={styles.newEntry}
@@ -90,9 +94,11 @@ export function ClientPage({
         </button>
       </div>
       <Calendar
+        tasks={tasks}
         dates={datesWithClient}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
+        fattSettings={fattSettings}
       />
     </>
   );

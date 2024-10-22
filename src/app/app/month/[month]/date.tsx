@@ -1,10 +1,11 @@
 'use client';
-import { getTaskName } from '@/taskMap';
+import { getTaskName, getTaskIcon } from '@/taskMap';
 import styles from './page.module.css';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { FreeagentTimeslip } from '@/freeagent';
+import { FreeagentTask, FreeagentTimeslip } from '@/freeagent';
 import { cn } from '@/app/utils/cn';
 import { updateTimeslip } from '@/app/actions';
+import { FattSettings } from '@/fatt-settings';
 
 export interface TimeslipDate {
   key: string;
@@ -25,6 +26,8 @@ interface DateProps {
   setStartDate: Dispatch<SetStateAction<string>>;
   setEndDate: Dispatch<SetStateAction<string>>;
   small?: boolean;
+  fattSettings: FattSettings;
+  tasks: FreeagentTask[];
 }
 
 function calcColour(timeslipDate: TimeslipDateWithClient, totalHours: number) {
@@ -40,6 +43,8 @@ export function Date({
   setStartDate,
   setEndDate,
   small,
+  fattSettings,
+  tasks,
 }: DateProps) {
   const [dragging, setDragging] = useState(false);
   const totalHours = timeslipDate.timeslips.reduce(
@@ -144,7 +149,11 @@ export function Date({
                     // timeslipDate.timeslips.map((timeslip) => (
                     //   <Timeslip key={timeslip.url} timeslip={timeslip} />
                     // ))
-                    <Timeslips timeslips={timeslipDate.timeslips} />
+                    <Timeslips
+                      timeslips={timeslipDate.timeslips}
+                      fattSettings={fattSettings}
+                      tasks={tasks}
+                    />
                   )}
                 </>
               )}
@@ -156,7 +165,15 @@ export function Date({
   );
 }
 
-function Timeslips({ timeslips }: { timeslips: FreeagentTimeslip[] }) {
+function Timeslips({
+  timeslips,
+  fattSettings,
+  tasks,
+}: {
+  timeslips: FreeagentTimeslip[];
+  fattSettings: FattSettings;
+  tasks: FreeagentTask[];
+}) {
   const [hours, setHours] = useState(
     timeslips.map((timeslip) => timeslip.hours)
   );
@@ -179,7 +196,10 @@ function Timeslips({ timeslips }: { timeslips: FreeagentTimeslip[] }) {
     <>
       {timeslips.map((timeslip, i) => (
         <div className={styles.timeslip} key={timeslip.url}>
-          <div>{getTaskName(timeslip.task)}</div>
+          <div className={styles.timeslipName}>
+            {getTaskIcon(timeslip.task, fattSettings, tasks)}{' '}
+            {getTaskName(timeslip.task, fattSettings, tasks)}
+          </div>
           <select
             className={styles.clearSelect}
             value={hours[i]}

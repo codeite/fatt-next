@@ -6,6 +6,8 @@ import { TimeslipDateWithClient } from './date';
 import { Date } from './date';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { cn } from '@/app/utils/cn';
+import { FattSettings } from '@/fatt-settings';
+import { FreeagentTask } from '@/freeagent';
 
 const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const DAYS_FULL = [
@@ -22,10 +24,14 @@ export function Calendar({
   dates,
   setStartDate,
   setEndDate,
+  fattSettings,
+  tasks,
 }: {
   dates: TimeslipDateWithClient[];
   setStartDate: Dispatch<SetStateAction<string>>;
   setEndDate: Dispatch<SetStateAction<string>>;
+  fattSettings: FattSettings;
+  tasks: FreeagentTask[];
 }) {
   const [hideWeekends, setHideWeekends] = useState(true);
 
@@ -70,6 +76,8 @@ export function Calendar({
                   setStartDate={setStartDate}
                   setEndDate={setEndDate}
                   small={isHiddenWeekend(date.key)}
+                  fattSettings={fattSettings}
+                  tasks={tasks}
                 />
               </div>
             );

@@ -127,6 +127,13 @@
   align-items: center;
 }
 
+
+
+.timeslipName span {
+  vertical-align: top;
+  vertical-align: text-top;
+}
+
 .missingHours {
   background-color: #fadfdf;
   border-top: 1px solid #be342b;

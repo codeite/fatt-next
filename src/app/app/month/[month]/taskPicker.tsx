@@ -3,12 +3,14 @@
 import { FreeagentProject, FreeagentTask } from '@/freeagent';
 import { getTaskName } from '@/taskMap';
 import styles from './page.module.css';
+import { FattSettings } from '@/fatt-settings';
 
 interface TaskPickerProps {
   tasks: FreeagentTask[];
   projects: FreeagentProject[];
   value: string;
   onChange: (value: string) => void;
+  fattSettings: FattSettings;
 }
 
 export function TaskPicker({
@@ -16,6 +18,7 @@ export function TaskPicker({
   projects,
   value,
   onChange,
+  fattSettings,
 }: TaskPickerProps) {
   const projectMap = projects.reduce((map, project) => {
     map[project.url] = project.name;
@@ -49,7 +52,7 @@ export function TaskPicker({
         <optgroup label={projectName} key={projectName}>
           {tasks.map((task) => (
             <option key={task.url} value={`${task.url}|${task.project}`}>
-              {getTaskName(task)}
+              {getTaskName(task, fattSettings)}
             </option>
           ))}
         </optgroup>
