@@ -197,7 +197,7 @@ function Timeslips({
       {timeslips.map((timeslip, i) => (
         <div className={styles.timeslip} key={timeslip.url}>
           <div className={styles.timeslipName}>
-            {getTaskIcon(timeslip.task, fattSettings, tasks)}{' '}
+            {getTaskIcon(timeslip.task, fattSettings)}{' '}
             {getTaskName(timeslip.task, fattSettings, tasks)}
           </div>
           <select
