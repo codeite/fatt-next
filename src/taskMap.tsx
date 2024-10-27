@@ -53,7 +53,7 @@ export function getTaskIcon(
   const urlString = typeof url === 'object' ? url.url : url;
   const id = urlString.split('/').pop() || '';
 
-  const icon = fattSettings?.tasks?.[id].iconName || '';
+  const icon = fattSettings?.tasks?.[id]?.iconName || '';
 
   return <span className="material-symbols-outlined">{icon}</span>;
 }
