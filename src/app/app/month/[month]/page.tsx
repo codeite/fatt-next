@@ -3,6 +3,7 @@ import {
   freeagentGet,
   freeagentGetAll,
   ProjectsResponse,
+  TaskResponse,
   TasksResponse,
   TimeslipResponse,
 } from '@/freeagent';
@@ -46,23 +47,33 @@ export default async function Home({ params }: { params: { month: string } }) {
     return timeslipDate;
   });
 
-  const tasks = await freeagentGet<TasksResponse>(`/v2/tasks?view=active`);
+  const usedTasks = Array.from(
+    new Set(timeslips.map((timeslip) => timeslip.task))
+  );
+
+  const activeTasks = await freeagentGet<TasksResponse>(
+    `/v2/tasks?view=active`
+  );
   const projects = await freeagentGet<ProjectsResponse>(`/v2/projects`);
+
+  const unmatchedTaskUrls = usedTasks.filter(
+    (taskUrl) => !activeTasks.tasks.some((task) => task.url === taskUrl)
+  );
+
+  const unMatchedTasks: TaskResponse[] = await Promise.all(
+    unmatchedTaskUrls.map((taskUrl) => freeagentGet<TaskResponse>(taskUrl))
+  );
+
+  const tasks = [
+    ...activeTasks.tasks,
+    ...unMatchedTasks.map((response) => response.task),
+  ];
 
   return (
     <main>
-      {/* <section>
-        <p>
-          Month {params.month} <br />
-          prefixDays: {prefixDays} <br />
-          calendarStart: {calendarStart.format('YYYY-MM-DD')} <br />
-          weeks: {weeks} <br />
-          daysOnScreen: {daysOnScreen} <br />
-        </p>
-      </section> */}
       <ClientPage
         firstOfMonth={params.month}
-        tasks={tasks.tasks}
+        tasks={tasks}
         projects={projects.projects}
         dates={dates}
         fattSettings={fattSettings}

@@ -273,6 +273,10 @@ export interface TasksResponse {
   tasks: FreeagentTask[];
 }
 
+export interface TaskResponse {
+  task: FreeagentTask;
+}
+
 export interface FreeagentTask {
   url: string;
   project: string;
