@@ -43,7 +43,7 @@ export function getTaskName(
   const name = typeof url === 'object' ? url.name : task?.name || url;
   const id = urlString.split('/').pop() || '';
 
-  return fattSettings?.tasks?.[id].short || name;
+  return fattSettings?.tasks?.[id]?.short || name;
 }
 
 export function getTaskIcon(
